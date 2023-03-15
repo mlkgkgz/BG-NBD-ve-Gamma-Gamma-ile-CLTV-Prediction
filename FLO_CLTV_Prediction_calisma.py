@@ -57,7 +57,7 @@ pd.options.mode.chained_assignment = None
 from sklearn.preprocessing import MinMaxScaler
 
 
-df_ = pd.read_csv("C:/Users/Melekg/Desktop/Miuul/Miuul Dersler/CRM Analytics/Case Study II/FLOCLTVPrediction/flo_data_20k.csv")
+df_ = pd.read_csv("C:/Users/.../flo_data_20k.csv")
 df = df_.copy()
 df.head()
 
@@ -82,7 +82,7 @@ check_df(df)
  # 2. Aykırı değerleri baskılamak için gerekli olan outlier_thresholds ve replace_with_thresholds fonksiyonlarını tanımlayınız.
 # Not: cltv hesaplanırken frequency değerleri integer olması gerekmektedir.Bu nedenle alt ve üst limitlerini round() ile yuvarlayınız.
 
-#normalde boxplotta quantile %25-75 olarak belirlenir. 99-1de eşik aralıkları daha geniş bununla en problemli olan aykırı değerleri baskılayacaz
+#normalde boxplotta quantile %25-75 olarak belirlenir. 99-1de eşik aralıkları daha geniş bununla en problemli olan aykırı değerleri baskılayacağız.
 #quantile fonk. çeyreklik hesaplamak için kullanılır.değişken küçükten buyuge sıralanır.yüzdelik olarak %1,%99.değerlere karşılık gelenlere uygula.
 
 def outlier_thresholds(dataframe, variable): #kendisine girilen değişken için eşik değer belirler
@@ -95,10 +95,10 @@ def outlier_thresholds(dataframe, variable): #kendisine girilen değişken için
 
 
 def replace_with_thresholds(dataframe, variable):
-    low_limit, up_limit = outlier_thresholds(dataframe, variable) #belirlenmesi gereken alt_üst limitler nedir? diye sorar
+    low_limit, up_limit = outlier_thresholds(dataframe, variable) 
     # dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
     # dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
-    dataframe.loc[(dataframe[variable] < low_limit), variable] = round(low_limit) #dataframe[variable] ilgili değişkendeki değerlerde alt limitten küçük olanlar varsa onları yukarıda belirlenen low_limite uyvarla.
+    dataframe.loc[(dataframe[variable] < low_limit), variable] = round(low_limit) 
     dataframe.loc[(dataframe[variable] > up_limit), variable] = round(up_limit)
 
 
@@ -165,10 +165,10 @@ type(today_date)
 
 
 cltv_df = pd.DataFrame()  #cltv_df boş bir df olşturdum
-cltv_df["customer_id"] = df["master_id"] #master_id leri cust_id olarak değiştirdim
+cltv_df["customer_id"] = df["master_id"] 
 
 #haftalık (last_order_date - first_order_date)  .astype('timedelta64[D]')) / 7
-#timedelta64[D] kullanılmasının sebebi bizim date çıktılarının hem tarih hem saat çıktısı veriyor olması. Day'e dönüştürdük
+
 
 cltv_df["recency_cltv_weekly"] = ((df["last_order_date"] - df["first_order_date"]).astype('timedelta64[D]')) / 7 #R
 
@@ -196,7 +196,7 @@ bgf.fit(cltv_df['frequency'],
 
 # a. 3 ay içerisinde müşterilerden beklenen satın almaları tahmin ediniz ve exp_sales_3_month olarak cltv dataframe'ine ekleyiniz.
 
-cltv_df["exp_sales_3_month"] = bgf.conditional_expected_number_of_purchases_up_to_time(4*3, # haftalık cinsten oluşugundan dolayı 3 ay:12 haftalık tahmin yap
+cltv_df["exp_sales_3_month"] = bgf.conditional_expected_number_of_purchases_up_to_time(4*3, 
                                                         cltv_df['frequency'],
                                                         cltv_df['recency_cltv_weekly'],
                                                         cltv_df['T_weekly'])
@@ -205,7 +205,7 @@ cltv_df["exp_sales_3_month"].head()
 
 # b. 6 ay içerisinde müşterilerden beklenen satın almaları tahmin ediniz ve exp_sales_6_month olarak cltv dataframe'ine ekleyiniz.
 
-cltv_df["exp_sales_6_month"] = bgf.conditional_expected_number_of_purchases_up_to_time(24, # haftalık cinsten oluşugundan dolayı 3 ay:12 haftalık tahmin yap
+cltv_df["exp_sales_6_month"] = bgf.conditional_expected_number_of_purchases_up_to_time(24, 
                                                         cltv_df['frequency'],
                                                         cltv_df['recency_cltv_weekly'],
                                                         cltv_df['T_weekly'])
@@ -217,7 +217,7 @@ cltv_df.sort_values("exp_sales_3_month",ascending=False)[:10]
 
 cltv_df.sort_values("exp_sales_6_month",ascending=False)[:10]
 
-# bir aylık periyodda şirketin beklediği toplam satış sayısı nedir? # 3836.8237379913894
+# bir aylık periyodda şirketin beklediği toplam satış sayısı nedir? 
 #bgf.predict(4,
 #            cltv_df['frequency'],
 #            cltv_df['recency_cltv_weekly'],
